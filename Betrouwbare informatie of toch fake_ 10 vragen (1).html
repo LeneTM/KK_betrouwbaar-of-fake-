@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Betrouwbare informatie of toch fake? 10 vragen</title>
+<style>
+:root{--blauw:#00283c;--or:#fa6432;--osoft:#ffe2d4;--body:#33404f;--mut:#5c6b7a;--line:#d8dde3;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--blauw);font-family:-apple-system,"Segoe UI",Arial,Helvetica,sans-serif}
+.wrap{font-size:clamp(14px,1.3vw,19px);max-width:1500px;margin:0 auto;padding:1.4em 1.1em 2em}
+.stage{display:flex;gap:1.5em;align-items:center}
+.dcol,.pcol{flex:1 1 0;min-width:0}
+.car{display:flex;align-items:center;gap:.5em}
+.arr{all:unset;box-sizing:border-box;flex:none;width:2.6em;height:2.6em;border-radius:50%;border:2px solid var(--blauw);color:var(--blauw);display:grid;place-items:center;font-size:1.3em;cursor:pointer;transition:background .15s,border-color .15s}
+.arr:hover,.arr:focus-visible{background:var(--osoft);border-color:var(--blauw)}
+.arr:disabled{opacity:.3;cursor:default;background:none;border-color:var(--blauw)}
+.track{flex:1;min-width:0;display:flex;gap:1em;overflow-x:auto;scroll-snap-type:x mandatory;padding:1em .4em;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.bol{all:unset;box-sizing:border-box;flex:none;width:11em;height:11em;border-radius:50%;border:3px solid var(--blauw);background:#fff;scroll-snap-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1em;gap:.15em;transition:background .15s,border-color .15s;box-shadow:0 1px 3px rgba(0,40,60,.08)}
+.bol b{font-size:2em;line-height:1;font-weight:400}
+.bol span{font-weight:700;font-size:.82em;line-height:1.25;color:var(--blauw)}
+.bol:hover,.bol:focus-visible{background:var(--osoft);border-color:var(--blauw)}
+.bol.seen{background:#f2f5f8}
+.bol.active{background:var(--osoft);border-color:var(--blauw);box-shadow:0 0 0 .3em var(--osoft)}
+.panel{border:1px solid var(--line);border-radius:.625em;padding:1.375em 1.5em;min-height:19em;box-shadow:0 1px 3px rgba(0,40,60,.08)}
+.eb{font-size:.75em;text-transform:uppercase;letter-spacing:.6px;color:var(--or);font-weight:700;margin-bottom:.5em}
+.panel h3{font-family:Georgia,serif;margin:0 0 .6em;font-size:1.35em;line-height:1.3}
+.panel p{margin:0 0 .7em;line-height:1.6;color:var(--body)}
+.ph{color:var(--mut)!important;font-style:italic}
+.tip{background:#fff;border:1px solid var(--or);border-radius:.5em;padding:.8em 1em;margin-top:1em;color:var(--body);line-height:1.55}
+.tip b{display:block;margin-bottom:.2em;color:var(--blauw)}
+.u{line-height:1.6;color:var(--body)}.u p{margin:0 0 .6em}.u ul{margin:.2em 0 .7em;padding-left:1.3em}.u li{margin-bottom:.3em}.u li::marker{color:var(--or)}
+.prog{margin-top:1em;display:flex;align-items:center;gap:10px}
+.bar{flex:1;height:6px;background:var(--line);border-radius:4px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--or);border-radius:4px;transition:width .25s}
+.pt{font-size:.8em;color:var(--mut);white-space:nowrap}.pt b{color:var(--blauw)}
+:focus-visible{outline:none}
+@media (max-width:760px){.stage{flex-direction:column;align-items:stretch}.dcol,.pcol{flex:none;width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage">
+  <div class="dcol">
+   <div class="car">
+    <button class="arr" id="prev" aria-label="Vorige bollen">&#8249;</button>
+    <div class="track" id="track" role="tablist" aria-label="Tien vragen over betrouwbare informatie"></div>
+    <button class="arr" id="next" aria-label="Volgende bollen">&#8250;</button>
+   </div>
+   <div class="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="pt" id="pt"><b>0</b> van 10 bekeken</div></div>
+  </div>
+  <div class="pcol">
+   <div class="panel" id="panel" aria-live="polite">
+    <div class="eb">Betrouwbare informatie of toch fake?</div>
+    <h3>10 vragen die je op weg helpen</h3>
+    <p class="ph">Het internet biedt heel wat informatie. Maar hoe weet je welke informatie betrouwbaar is en welke niet? Klik op een bol om de vraag te bekijken. Met de pijltjes of het toetsenbord blader je door de bollen.</p>
+   </div>
+  </div>
+ </div>
+</div>
+<script>
+var Q=[
+{q:"Wie is de auteur?",s:"Wie is de auteur?",u:"<ul><li>Staat er een auteur vermeld?</li><li>Bestaat de auteur echt?</li><li>Schrijft die voor bekende sites/kranten?</li><li>Is dit een autoriteit ter zake?</li><li>Waaruit blijkt dat de auteur een expert is op dit gebied?</li><li>Wat zeggen andere bronnen over de auteur?</li><li>Werkt die persoon voor een betrouwbare organisatie?</li></ul>",t:"Zoek online meer informatie over de auteur."},
+{q:"Wanneer werd dit geschreven?",s:"Wanneer werd dit geschreven?",u:"<ul><li>Wanneer is het bericht geschreven of aangepast?</li><li>Is de inhoud actueel, ook voor jouw onderwerp?</li><li>Zijn er recentere bronnen of ontwikkelingen?</li></ul><p>Soms staat er een nieuwe datum bij een oud artikel en is de titel en inhoud aangepast.</p>",t:"Zoek het origineel bericht."},
+{q:"Wie heeft het artikel gepubliceerd?",s:"Wie heeft het artikel gepubliceerd?",u:"<ul><li>Een nieuwsmedium?</li><li>Een persoon via sociale media?</li><li>Welk publiek wil de auteur bereiken, en past dat bij jouw opdracht?</li><li>Sluit de informatie aan bij jouw onderzoeksvraag, of zijn er betere bronnen?</li></ul>",t:"Vergelijk andere bronnen over het thema met elkaar."},
+{q:"Welke bronnen gebruikt de auteur?",s:"Welke bronnen gebruikt de auteur?",u:"<ul><li>Van waar komt de informatie?</li><li>Van een ander nieuwsmedium, organisatie, interview of rapport?</li><li>Is de informatie waar, correct en betrouwbaar?</li><li>Wordt ze ondersteund met bewijsmateriaal?</li><li>Wordt er verwezen naar gebruikte bronnen?</li></ul>",t:"Controleer of de informatie uit de bronnen correct is weergegeven."},
+{q:"Is de titel neutraal?",s:"Is de titel neutraal?",u:"De titel zegt niet altijd alles. Wist je dat <ul><li>titels online soms aangepast worden om meer kliks te krijgen?</li><li>titels vaak ook citaten bevatten?</li></ul>",t:"Lees steeds verder dan de titel. Zo kan je citaten en beweringen waarschijnlijk beter in hun context lezen."},
+{q:"Waarom schrijft de auteur dit?",s:"Waarom schrijft de auteur dit?",u:"<ul><li>Wat is de bedoeling van de auteur: informeren, overtuigen, entertainen?</li><li>Is het reclame?</li><li>Is het een mening?</li><li>Is het om te lachen?</li><li>Is de auteur duidelijk over dit doel?</li><li>Worden er feiten meegedeeld, of zijn het opinies?</li></ul>",t:"Ga op zoek naar elementen die aantonen waarom de auteur het stuk schrijft."},
+{q:"Kloppen de links?",s:"Kloppen de links?",u:"<p>In artikels verwijst men naar andere websites, organisaties of informatie.</p><ul><li>Zijn deze echt?</li><li>Klopt dit met wat in het artikel beweerd wordt?</li></ul>",t:"Controleer de links."},
+{q:"Waarom krijg jij dit te zien?",s:"Waarom krijg jij dit te zien?",u:"Online krijg je vaak andere nieuwsberichten te zien dan je vrienden. Dat is het resultaat van wat je online opzoekt, wie je vrienden en je voorkeuren zijn.",t:"Wis je webgeschiedenis en verwijder je cookies. Volg verschillende media, personen …"},
+{q:"Wat zijn mijn vooroordelen?",s:"Wat zijn mijn vooroordelen?",u:"Je hebt vaak een voorkeur voor iemand die iets zegt of schrijft. Je persoonlijke ervaringen of opvallende beelden kunnen je beïnvloeden.",t:"Praat met anderen over wat je denkt."},
+{q:"Hoe is de informatie voorgesteld?",s:"Hoe is de informatie voorgesteld?",u:"<ul><li>Bevat het bericht bewerkte afbeeldingen, schrijffouten …?</li></ul>",t:"Kijk ook kritisch naar beelden."}
+];
+var IC=["✍️","📅","📰","📚","⚖️","🎯","🔗","👁️","🧠","🖼️"];
+var track=document.getElementById("track"),panel=document.getElementById("panel"),bols=[],seen={},cur=-1;
+Q.forEach(function(d,i){
+  var b=document.createElement("button");b.className="bol";b.type="button";b.setAttribute("role","tab");b.setAttribute("aria-label","Vraag "+(i+1)+": "+d.q);
+  b.innerHTML="<b aria-hidden='true'>"+IC[i]+"</b><span>"+d.s+"</span>";
+  b.addEventListener("click",function(){show(i)});
+  track.appendChild(b);bols.push(b);
+});
+function center(i){var e=bols[i];track.scrollTo({left:e.offsetLeft-(track.clientWidth-e.clientWidth)/2,behavior:"smooth"})}
+function show(i){
+  i=(i+Q.length)%Q.length;cur=i;
+  bols.forEach(function(b){b.classList.remove("active");b.setAttribute("aria-selected","false")});
+  bols[i].classList.add("active","seen");bols[i].setAttribute("aria-selected","true");
+  var d=Q[i];
+  panel.innerHTML="<div class='eb'>Vraag "+(i+1)+" van "+Q.length+"</div><h3>"+d.q+"</h3><div class='u'>"+d.u+"</div>"+"<div class='tip'><b>Tip</b>"+d.t+"</div>";
+  seen[i]=1;var n=Object.keys(seen).length;
+  document.getElementById("fill").style.width=Math.round(n/Q.length*100)+"%";
+  document.getElementById("pt").innerHTML="<b>"+n+"</b> van "+Q.length+" bekeken";
+  center(i);
+}
+function page(dir){var e=track.scrollWidth-track.clientWidth;if(dir>0&&track.scrollLeft>=e-4){track.scrollTo({left:0,behavior:"smooth"})}else if(dir<0&&track.scrollLeft<=4){track.scrollTo({left:e,behavior:"smooth"})}else{track.scrollBy({left:dir*track.clientWidth*.8,behavior:"smooth"})}}
+document.getElementById("prev").addEventListener("click",function(){page(-1)});
+document.getElementById("next").addEventListener("click",function(){page(1)});
+document.addEventListener("keydown",function(e){
+  if(e.key=="ArrowRight"){e.preventDefault();show(cur<0?0:cur+1)}
+  else if(e.key=="ArrowLeft"){e.preventDefault();show(cur<0?0:cur-1)}
+});
+</script>
+</body>
+</html>
